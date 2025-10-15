@@ -30,6 +30,14 @@ pub enum Commands {
     SelectSpaceName {
         /// Space name to select
         space_name: String,
+
+        /// Case-insensitive matching
+        #[arg(short = 'i', long)]
+        case_insensitive: bool,
+
+        /// Partial match (allow substring matching)
+        #[arg(short = 'p', long)]
+        partial: bool,
     },
 
     /// List tabs
@@ -58,13 +66,13 @@ pub enum Commands {
         /// Tab name to select
         tab_name: String,
 
-        /// Case-sensitive matching
-        #[arg(short = 'c', long)]
-        case_sensitive: bool,
+        /// Case-insensitive matching
+        #[arg(short = 'i', long)]
+        case_insensitive: bool,
 
-        /// Exact match only (no partial matching)
-        #[arg(short = 'e', long)]
-        exact: bool,
+        /// Partial match (allow substring matching)
+        #[arg(short = 'p', long)]
+        partial: bool,
     },
 
     /// Reload tab

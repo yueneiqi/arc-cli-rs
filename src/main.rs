@@ -43,12 +43,20 @@ async fn main() {
         Commands::SelectSpace { space_id } => {
             arc::select_space(space_id).await
         }
-        Commands::SelectSpaceName { space_name } => {
+        Commands::SelectSpaceName { space_name, case_insensitive, partial } => {
             match arc::get_spaces().await {
                 Ok(spaces) => {
-                    let space = spaces
-                        .iter()
-                        .find(|s| s.title.to_lowercase() == space_name.to_lowercase());
+                    let space = spaces.iter().find(|s| {
+                        let title = &s.title;
+                        let name = &space_name;
+
+                        match (case_insensitive, partial) {
+                            (false, false) => title == name, // exact + case-sensitive (default)
+                            (false, true) => title.contains(name), // partial + case-sensitive
+                            (true, false) => title.to_lowercase() == name.to_lowercase(), // exact + case-insensitive
+                            (true, true) => title.to_lowercase().contains(&name.to_lowercase()), // partial + case-insensitive
+                        }
+                    });
 
                     match space {
                         Some(s) => arc::select_space(s.id).await,
@@ -83,18 +91,18 @@ async fn main() {
         Commands::SelectTab { window_id, tab_id } => {
             arc::select_tab(window_id, tab_id).await
         }
-        Commands::SelectTabName { tab_name, case_sensitive, exact } => {
+        Commands::SelectTabName { tab_name, case_insensitive, partial } => {
             match arc::get_tabs().await {
                 Ok(tabs) => {
                     let tab = tabs.iter().find(|t| {
                         let title = &t.title;
                         let name = &tab_name;
 
-                        match (case_sensitive, exact) {
-                            (true, true) => title == name,
-                            (true, false) => title.contains(name),
-                            (false, true) => title.to_lowercase() == name.to_lowercase(),
-                            (false, false) => title.to_lowercase().contains(&name.to_lowercase()),
+                        match (case_insensitive, partial) {
+                            (false, false) => title == name, // exact + case-sensitive (default)
+                            (false, true) => title.contains(name), // partial + case-sensitive
+                            (true, false) => title.to_lowercase() == name.to_lowercase(), // exact + case-insensitive
+                            (true, true) => title.to_lowercase().contains(&name.to_lowercase()), // partial + case-insensitive
                         }
                     });
 

@@ -10,6 +10,12 @@ This is a Rust port of the original [arc-cli](https://github.com/GeorgeSG/arc-cl
 
 ## Installation
 
+### From GitHub
+
+```bash
+cargo install --git https://github.com/yueneiqi/arc-cli-rs.git
+```
+
 ### From Source
 
 Required: Rust toolchain (cargo)
@@ -44,27 +50,31 @@ Options:
   --version  Show version number
 ```
 
-### Select Tab by Name
+### Select by Name
 
-The `select-tab-name` command supports flexible matching options:
+Both `select-space-name` and `select-tab-name` commands support flexible matching options:
 
 ```bash
-# Default: Case-insensitive partial match
-arc-cli-rs stn github
-
-# Case-sensitive partial match
-arc-cli-rs stn -c GitHub
+# Default: Exact case-sensitive match
+arc-cli-rs stn "GitHub Dashboard"
+arc-cli-rs sn "Personal"
 
 # Case-insensitive exact match
-arc-cli-rs stn -e "GitHub Dashboard"
+arc-cli-rs stn -i "github dashboard"
+arc-cli-rs sn -i "personal"
 
-# Case-sensitive exact match
-arc-cli-rs stn -ce "GitHub Dashboard"
+# Partial case-sensitive match
+arc-cli-rs stn -p GitHub
+arc-cli-rs sn -p Pers
+
+# Partial case-insensitive match
+arc-cli-rs stn -ip github
+arc-cli-rs sn -ip pers
 ```
 
 Options:
-- `-c, --case-sensitive`: Enable case-sensitive matching
-- `-e, --exact`: Enable exact match (no partial matching)
+- `-i, --case-insensitive`: Enable case-insensitive matching (default: case-sensitive)
+- `-p, --partial`: Enable partial match/substring matching (default: exact match)
 
 ## License
 
